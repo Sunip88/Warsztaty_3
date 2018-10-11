@@ -24,8 +24,8 @@ class Person(models.Model):
 class Address(models.Model):
     city = models.CharField(max_length=64)
     street = models.CharField(max_length=64)
-    street_number = models.PositiveIntegerField()
-    flat_number = models.PositiveIntegerField()
+    street_number = models.CharField(max_length=8)
+    flat_number = models.CharField(max_length=8, null=True)
     persons = models.ForeignKey(Person, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
@@ -72,4 +72,3 @@ class Groups(models.Model):
 
     def __str__(self):
         return f'{self.title}'
-

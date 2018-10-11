@@ -1,0 +1,29 @@
+{% extends "contact_box/base.html" %}
+{% block navbar %}
+<main role="main" class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="content-section">
+            <h3>Osoby</h3>
+                <p>
+                    <ul class="list-group">
+                        {% for person in persons %}
+                        <li class="list-group-item list-group-item-light"><a href="{% url 'person-specific' person.id %}">{{ person.name }} {{ person.surname }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="col-md-8">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</main>
+{% endblock navbar %}

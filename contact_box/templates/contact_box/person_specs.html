@@ -1,0 +1,47 @@
+{% extends "contact_box/group_person.html" %}
+{% load extras %}
+{% block content %}
+        <div class="content-section">
+        <div class="media">
+            <img class="rounded-circle account-img" src="{{ person_spec.image.url }}">
+            <div class="media-body">
+                <h2 class="account-heading">{{ person_spec.name }} {{ person_spec.surname }}</h2>
+                <p class="text-secondary">{{ person_spec.description }}</p><br>
+
+                {% if person_spec|person_email_all %}
+                    <p>Email:</p>
+                {% for email in person_spec|person_email_all %}
+                    <div class="content-section">
+                        <p>{{ email.email_address }}</p>
+                        <p>Typ adresu email: {{ email.get_email_type_display }}</p>
+                    </div>
+                {% endfor %}
+                    <br>
+                {% endif %}
+
+                {% if person_spec|person_address_all %}
+                <p>Adresy:</p>
+                {% for address in person_spec|person_address_all %}
+                    <div class="content-section">
+                    <p>Miasto: {{ address.city }}</p>
+                    <p>Ulica: {{ address.street }} {{ address.street_number }} {{ street.flat_number }}</p>
+                    </div>
+                {% endfor %}
+                    <br>
+                {% endif %}
+
+                {% if person_spec|person_phonenumber_all %}
+                <p>Telefony:</p>
+                {% for number in person_spec|person_phonenumber_all %}
+                    <div class="content-section">
+                        <p>Numer telefonu: {{ number.phone_number }}</p>
+                        <p>Typ numeru telefonu: {{ number.get_type_number_display }}</p>
+                    </div>
+                {% endfor %}
+                    <br>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
