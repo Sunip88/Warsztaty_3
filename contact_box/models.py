@@ -57,7 +57,7 @@ class Email(models.Model):
         (2, 'Other')
     ]
 
-    email_address = models.TextField()
+    email_address = models.EmailField(max_length=70)
     email_type = models.IntegerField(choices=EMAIL_TYPE_CHOICES)
     persons = models.ForeignKey(Person, on_delete=models.CASCADE, null=True)
 

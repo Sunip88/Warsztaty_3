@@ -1,0 +1,21 @@
+{% extends "contact_box/person_nav.html" %}
+{% load extras %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+        <form method="post">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <label class="border-bottom mb-4">Dodaj osobe</label>
+                {{ form_p|crispy }}
+                {{ form_a|crispy }}
+                {{ form_e|crispy }}
+                {{ form_phone|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Dodaj</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
+
