@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-md-4">
             <div class="content-section">
-            <h3>Osoby <a href="#" class="small text-secondary">dodaj</a></h3>
+            <h3>Osoby <a href="{% url 'person-add' %}" class="small text-secondary">dodaj</a></h3>
                 <p>
                     <ul class="list-group">
                         {% for person in persons %}

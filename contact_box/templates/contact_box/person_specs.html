@@ -5,7 +5,8 @@
         <div class="media">
             <img class="rounded-circle account-img" src="{{ person_spec.image.url }}">
             <div class="media-body">
-                <h2 class="account-heading">{{ person_spec.name }} {{ person_spec.surname }}</h2>
+                <h2 class="account-heading">{{ person_spec.name }} {{ person_spec.surname }}
+                    <a href="{% url 'modify-person' person_spec.id %}" class="small">edytuj</a> </h2>
                 <p class="text-secondary">{{ person_spec.description }}</p><br>
 
                 {% if person_spec|person_email_all %}

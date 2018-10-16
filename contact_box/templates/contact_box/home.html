@@ -1,5 +1,16 @@
-{% extends "contact_box/person_nav.html" %}
+{% extends "contact_box/base.html" %}
 {% block content %}
- <p>Home site
- </p>
+<main role="main" class="container">
+    <div class="row">
+        <div class="col-md-8">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            <p>Skrzynka kontaktowa</p>
+
+        </div>
+    </div>
+</main>
 {% endblock content %}

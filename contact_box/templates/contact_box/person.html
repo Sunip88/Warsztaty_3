@@ -1,0 +1,38 @@
+{% extends "contact_box/base.html" %}
+{% load extras %}
+{% block content %}
+    <main role="main" class="container">
+    <div class="row">
+        <div class="col-md-8">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        <div class="content-section">
+            <h3>Osoby <a href="{% url 'person-add' %}" class="small text-secondary">dodaj</a></h3>
+            <table cellspacing="3" cellpadding="4">
+                <tr>
+                    <th>Imie i nazwisko</th>
+                    <th>Adres</th>
+                    <th>Telefon</th>
+                    <th>Email</th>
+                    <th>Edytuj</th>
+                    <th>Usun</th>
+                </tr>
+                {% for person in persons %}
+                    <tr>
+                        <td><a href="{% url 'person-specific' person.id %}">{{ person.name }} {{ person.surname }}</a></td>
+                        <td>{{ person|person_address_first }}</td>
+                        <td>{{ person|person_phonenumber_first }}</td>
+                        <td>{{ person|person_email_first }}</td>
+                        <td>edycja</td>
+                        <td>usuniecie</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock content %}
