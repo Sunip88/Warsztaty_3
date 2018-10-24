@@ -3,6 +3,7 @@ from .models import Person, Email, Address, PhoneNumber
 from django.views import View
 from django.views.generic import CreateView
 from .forms import AddPersonForm, AddressForm, EmailForm, PhoneNumberForm
+from django.forms import formset_factory
 # Create your views here.
 
 
@@ -28,6 +29,7 @@ class ShowSpecific(View):
 class NewPerson(View):
     form_class = AddPersonForm
     form_class_address = AddressForm
+    # form_class_address = formset_factory(AddressForm, extra=2)
     form_class_email = EmailForm
     form_class_phone = PhoneNumberForm
 
@@ -43,6 +45,7 @@ class NewPerson(View):
             form.save()
             new_person = Person.objects.get(id=form.instance.id)
             form_a = self.form_class_address(request.POST)
+            print(form_a)
             form_e = self.form_class_email(request.POST)
             form_phone = self.form_class_phone(request.POST)
             if form_a.is_valid() and form_e.is_valid() and form_phone.is_valid():
@@ -109,28 +112,22 @@ class EditPerson(View):
                 if address:
                     form_a.save()
                 else:
-                    new_address = form_a.save()
-                    new_address_obj = Address.objects.get(id=new_address.pk)
-                    new_address_obj.persons_id = person.id
-                    new_address_obj.save()
+                    form_a.instance.persons = person
+                    form_a.save()
 
                 if email:
                     form_e.save()
                 else:
-                    new_email = form_e.save()
-                    new_email_obj = Email.objects.get(id=new_email.pk)
-                    new_email_obj.persons_id = person.id
-                    new_email_obj.save()
+                    form_e.instance.persons = person
+                    form_e.save()
 
                 if phone:
                     form_phone.save()
                 else:
-                    new_phone = form_phone.save()
-                    new_phone_obj = PhoneNumber.objects.get(id=new_phone.pk)
-                    new_phone_obj.persons_id = person.id
-                    new_phone_obj.save()
+                    form_phone.instance.persons = person
+                    form_phone.save()
 
-            return HttpResponse('gg dane')
+            return redirect('show-all')
         return HttpResponse('Nieprawidłowe dane')
 
 # edycja zrobiona tylko dla jednego adresu, miasta i telefonu
