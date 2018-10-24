@@ -8,6 +8,13 @@
             <fieldset class="form-group">
                 <label class="border-bottom mb-4">Dodaj osobe</label>
                 {{ form_p|crispy }}
+                <button>Dodaj adres</button>
+{#                {% for form in form_a %}#}
+                    {{ form_a|crispy }}
+{#                {% endfor %}#}
+
+                {{ form_e|crispy }}
+                {{ form_phone|crispy }}
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Dodaj</button>

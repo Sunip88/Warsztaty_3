@@ -1,5 +1,5 @@
 from django import forms
-from .models import Person, Address, Email, PhoneNumber
+from .models import Person, Address, Email, PhoneNumber, Groups
 
 
 class AddPersonForm(forms.ModelForm):
@@ -40,3 +40,9 @@ class PhoneNumberForm(forms.ModelForm):
         super(PhoneNumberForm, self).__init__(*args, **kwargs)
         self.fields['phone_number'].required = False
         self.fields['type_number'].required = False
+
+
+class AddGroupForm(forms.ModelForm):
+    class Meta:
+        model = Groups
+        fields = ['title', 'description']

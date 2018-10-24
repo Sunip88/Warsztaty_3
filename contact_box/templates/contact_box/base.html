@@ -19,14 +19,14 @@
     <header class="site-header">
       <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
         <div class="container">
-          <a class="navbar-brand mr-4" href="{% url 'home' %}">Skrzynka kontaktowa</a>
+          <a class="navbar-brand mr-4" href="{% url 'search' %}">Skrzynka kontaktowa</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="{% url 'show-all' %}">Osoby</a>
-              <a class="nav-item nav-link" href="#">Grupy</a>
+              <a class="nav-item nav-link" href="{% url 'show-all-groups' %}">Grupy</a>
             </div>
             <div class="navbar-nav">
                     <a class="nav-item nav-link" href="#">New Post</a>

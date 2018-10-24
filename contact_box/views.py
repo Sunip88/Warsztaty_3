@@ -1,9 +1,10 @@
-from django.shortcuts import render, HttpResponse, redirect
-from .models import Person, Email, Address, PhoneNumber
+from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
+from .models import Person, Email, Address, PhoneNumber, Groups
 from django.views import View
 from django.views.generic import CreateView
-from .forms import AddPersonForm, AddressForm, EmailForm, PhoneNumberForm
+from .forms import AddPersonForm, AddressForm, EmailForm, PhoneNumberForm, AddGroupForm
 from django.forms import formset_factory
+from django.contrib import messages
 # Create your views here.
 
 
@@ -15,7 +16,7 @@ class Home(View):
 
 class Show(View):
     def get(self, request):
-        persons = Person.objects.all()
+        persons = Person.objects.all().order_by('name')
         return render(request, 'contact_box/person.html', {'persons': persons})
 
 
@@ -28,35 +29,21 @@ class ShowSpecific(View):
 
 class NewPerson(View):
     form_class = AddPersonForm
-    form_class_address = AddressForm
+    # form_class_address = AddressForm
     # form_class_address = formset_factory(AddressForm, extra=2)
-    form_class_email = EmailForm
-    form_class_phone = PhoneNumberForm
+    # form_class_email = EmailForm
+    # form_class_phone = PhoneNumberForm
 
     def get(self, request):
         persons = Person.objects.all()
         return render(request, 'contact_box/person_add.html',
-                      {'form_p': self.form_class, 'form_a': self.form_class_address, 'form_e': self.form_class_email,
-                       'form_phone': self.form_class_phone, 'persons': persons})
+                      {'form_p': self.form_class, 'persons': persons})
 
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
-            form.save()
-            new_person = Person.objects.get(id=form.instance.id)
-            form_a = self.form_class_address(request.POST)
-            print(form_a)
-            form_e = self.form_class_email(request.POST)
-            form_phone = self.form_class_phone(request.POST)
-            if form_a.is_valid() and form_e.is_valid() and form_phone.is_valid():
-                form_a.instance.persons = new_person
-                form_e.instance.persons = new_person
-                form_phone.instance.persons = new_person
-                form_a.save()
-                form_e.save()
-                form_phone.save()
-
-            return redirect('show-all')
+            new_person = form.save()
+            return redirect('person-specific', id_person=new_person.id)
         return HttpResponse('Nieprawidłowe dane')
 
 
@@ -131,3 +118,80 @@ class EditPerson(View):
         return HttpResponse('Nieprawidłowe dane')
 
 # edycja zrobiona tylko dla jednego adresu, miasta i telefonu
+
+
+def delete_person(request, person_id):
+    person = get_object_or_404(Person, id=person_id)
+    person.delete()
+    messages.success(request, 'Dane osoby zostały usunięte')
+    return redirect('show-all')
+
+
+class ShowGroups(View):
+    def get(self, request):
+        groups = Groups.objects.all()
+        return render(request, 'contact_box/groups.html', {'groups': groups})
+
+
+class NewGroup(View):
+    form_class = AddGroupForm
+
+    def get(self, request):
+        groups = Groups.objects.all()
+        return render(request, 'contact_box/group_add.html',
+                      {'form': self.form_class, 'groups': groups})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            new_group = form.save()
+            return redirect('group-specific', id_group=new_group.id)
+        return HttpResponse('Nieprawidłowe dane')
+
+
+class ShowSpecificGroup(View):
+    def get(self, request, id_group):
+        groups = Groups.objects.all()
+        group_spec = Groups.objects.get(id=id_group)
+        person_on = list(group_spec.persons.all())
+        return render(request, 'contact_box/groups_specs.html', {'groups': groups, 'group_spec': group_spec, 'persons': person_on})
+
+
+class EditGroup(View):
+    form_class = AddGroupForm
+
+    def get(self, request, group_id):
+        groups = Groups.objects.all()
+        group = get_object_or_404(Groups, id=group_id)
+        initial_person = {'title': group.title, 'description': group.description}
+        form_db_person = self.form_class(initial=initial_person)
+        persons = list(Person.objects.all())
+        person_on = list(group.persons.all())
+
+        return render(request, 'contact_box/group_modify.html',
+                      {'form': form_db_person, 'groups': groups, 'person_on': person_on, 'persons': persons})
+
+    def post(self, request, group_id):
+        group = get_object_or_404(Groups, id=group_id)
+        button = request.POST.get('button')
+        if button == 'group':
+            form = self.form_class(request.POST, instance=group)
+            if form.is_valid():
+                form.save()
+        elif button == 'person':
+            persons = [int(x) for x in request.POST.getlist('person')]
+            for person in persons:
+                person_db = Person.objects.get(id=person)
+                person_group_db = group.persons.filter(id=person_db.id)
+                if len(person_group_db) == 0:
+                    group.persons.add(person_db)
+            person_on = list(group.persons.all())
+
+            for person in person_on:
+                if person.id not in persons:
+                    person.delete()
+
+        # dokonczyc
+        return redirect('show-all')
+        # return HttpResponse('Nieprawidłowe dane')
+

@@ -1,4 +1,4 @@
-{% extends "contact_box/person_nav.html" %}
+{% extends "contact_box/group_nav.html" %}
 {% load extras %}
 {% load crispy_forms_tags %}
 {% block content %}
@@ -6,8 +6,8 @@
         <form method="post">
             {% csrf_token %}
             <fieldset class="form-group">
-                <label class="border-bottom mb-4">Dodaj osobe</label>
-                {{ form_p|crispy }}
+                <label class="border-bottom mb-4">Dodaj grupę</label>
+                {{ form|crispy }}
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Dodaj</button>

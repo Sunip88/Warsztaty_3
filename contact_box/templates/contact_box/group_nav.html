@@ -1,0 +1,29 @@
+{% extends "contact_box/base.html" %}
+{% block navbar %}
+<main role="main" class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="content-section">
+            <h3>Grupy <a href="{% url 'group-add' %}" class="small text-secondary">dodaj</a></h3>
+                <p>
+                    <ul class="list-group">
+                        {% for group in groups %}
+                        <li class="list-group-item list-group-item-light"><a href="{% url 'group-specific' group.id %}">{{ group.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="col-md-8">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</main>
+{% endblock navbar %}

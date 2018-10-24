@@ -26,8 +26,8 @@
                         <td>{{ person|person_address_first }}</td>
                         <td>{{ person|person_phonenumber_first }}</td>
                         <td>{{ person|person_email_first }}</td>
-                        <td><a href="{% url 'modify-person' person.id %}">edycja</a></td>
-                        <td>usuniecie</td>
+                        <td><a href="{% url 'modify-person' person.id %}"><button>edytuj</button></a></td>
+                        <td><a href="{% url 'delete-person' person.id %}"><button>usuń</button></a></td>
                     </tr>
                 {% endfor %}
             </table>

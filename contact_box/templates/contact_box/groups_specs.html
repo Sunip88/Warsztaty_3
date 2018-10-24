@@ -1,0 +1,24 @@
+{% extends "contact_box/group_nav.html" %}
+{% load extras %}
+{% block content %}
+        <div class="content-section">
+        <div class="media">
+            <div class="media-body">
+                <h2 class="account-heading">{{ group_spec.title }}
+                    <a href="{% url 'modify-group' group_spec.id %}" class="small">edytuj</a> </h2>
+                <p class="text-secondary">{{ group_spec.description }}</p><br>
+
+                {% if persons %}
+                    <p>Osoby w grupie:</p>
+                    <ul>
+                    {% for person in persons %}
+                        <li><a href="{% url 'person-specific' person.id %}">{{ person.name }} {{ person.surname }}</a></li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+

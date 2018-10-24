@@ -1,0 +1,38 @@
+{% extends "contact_box/group_nav.html" %}
+{% load extras %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+        <form method="post">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <label class="border-bottom mb-4">Dodaj grupę</label>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit" name="button" value="group">Dodaj</button>
+            </div>
+        </form>
+        <form method="post">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <label class="border-bottom mb-4">Osoby w grupie</label>
+                <table>
+                    {% for one in persons %}
+                        <tr>
+                            {% if one in person_on %}
+                                <td><input type="checkbox" name="person" value="{{ one.id }}" checked> - {{ one.name }} {{ one.surname }}</td>
+                            {% else %}
+                                <td><input type="checkbox" name="person" value="{{ one.id }}"> - {{ one.name }} {{ one.surname }}</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit" name="button" value="person">Zatwierdz</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
+
