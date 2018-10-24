@@ -1,5 +1,5 @@
-from django.shortcuts import render, HttpResponse
-from .models import Person
+from django.shortcuts import render, HttpResponse, redirect
+from .models import Person, Email, Address, PhoneNumber
 from django.views import View
 from django.views.generic import CreateView
 from .forms import AddPersonForm, AddressForm, EmailForm, PhoneNumberForm
@@ -7,25 +7,22 @@ from .forms import AddPersonForm, AddressForm, EmailForm, PhoneNumberForm
 
 
 class Home(View):
-    persons = Person.objects.all()
-
     def get(self, request):
-        return render(request, 'contact_box/home.html', {'persons': self.persons})
+        persons = Person.objects.all()
+        return render(request, 'contact_box/home.html', {'persons': persons})
 
 
 class Show(View):
-    persons = Person.objects.all()
-
     def get(self, request):
-        return render(request, 'contact_box/person.html', {'persons': self.persons})
+        persons = Person.objects.all()
+        return render(request, 'contact_box/person.html', {'persons': persons})
 
 
 class ShowSpecific(View):
-    persons = Person.objects.all()
-
     def get(self, request, id_person):
+        persons = Person.objects.all()
         person_spec = Person.objects.get(id=id_person)
-        return render(request, 'contact_box/person_specs.html', {'persons': self.persons, 'person_spec': person_spec})
+        return render(request, 'contact_box/person_specs.html', {'persons': persons, 'person_spec': person_spec})
 
 
 class NewPerson(View):
@@ -48,7 +45,7 @@ class NewPerson(View):
             form_a = self.form_class_address(request.POST)
             form_e = self.form_class_email(request.POST)
             form_phone = self.form_class_phone(request.POST)
-            if form_a.is_valid() and form_e.is_valid():
+            if form_a.is_valid() and form_e.is_valid() and form_phone.is_valid():
                 form_a.instance.persons = new_person
                 form_e.instance.persons = new_person
                 form_phone.instance.persons = new_person
@@ -56,7 +53,7 @@ class NewPerson(View):
                 form_e.save()
                 form_phone.save()
 
-            return HttpResponse('gg dane')
+            return redirect('show-all')
         return HttpResponse('Nieprawidłowe dane')
 
 
@@ -97,22 +94,43 @@ class EditPerson(View):
                       {'form_p': form_db_person, 'form_a': form_db_address, 'form_e': form_db_email,
                        'form_phone': form_db_phone, 'persons': persons_nav})
 
-#do zrobienia
-    def post(self, request):
-        form = self.form_class(request.POST)
+    def post(self, request, person_id):
+        person = Person.objects.get(id=person_id)
+        address = person.address_set.all().first() # temp
+        email = person.email_set.all().first() # temp
+        phone = person.phonenumber_set.all().first()
+        form = self.form_class(request.POST, instance=person)
         if form.is_valid():
             form.save()
-            new_person = Person.objects.get(id=form.instance.id)
-            form_a = self.form_class_address(request.POST)
-            form_e = self.form_class_email(request.POST)
-            form_phone = self.form_class_phone(request.POST)
-            if form_a.is_valid() and form_e.is_valid():
-                form_a.instance.persons = new_person
-                form_e.instance.persons = new_person
-                form_phone.instance.persons = new_person
-                form_a.save()
-                form_e.save()
-                form_phone.save()
+            form_a = self.form_class_address(request.POST, instance=address)
+            form_e = self.form_class_email(request.POST, instance=email)
+            form_phone = self.form_class_phone(request.POST, instance=phone)
+            if form_a.is_valid() and form_e.is_valid() and form_phone.is_valid():
+                if address:
+                    form_a.save()
+                else:
+                    new_address = form_a.save()
+                    new_address_obj = Address.objects.get(id=new_address.pk)
+                    new_address_obj.persons_id = person.id
+                    new_address_obj.save()
+
+                if email:
+                    form_e.save()
+                else:
+                    new_email = form_e.save()
+                    new_email_obj = Email.objects.get(id=new_email.pk)
+                    new_email_obj.persons_id = person.id
+                    new_email_obj.save()
+
+                if phone:
+                    form_phone.save()
+                else:
+                    new_phone = form_phone.save()
+                    new_phone_obj = PhoneNumber.objects.get(id=new_phone.pk)
+                    new_phone_obj.persons_id = person.id
+                    new_phone_obj.save()
 
             return HttpResponse('gg dane')
         return HttpResponse('Nieprawidłowe dane')
+
+# edycja zrobiona tylko dla jednego adresu, miasta i telefonu
