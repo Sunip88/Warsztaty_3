@@ -50,34 +50,59 @@ class NewPerson(View):
 
 class EditPerson(View):
     form_class = AddPersonForm
-    form_class_address = AddressForm
-    form_class_email = EmailForm
-    form_class_phone = PhoneNumberForm
+    # form_class_address = AddressForm
+    form_class_address = formset_factory(AddressForm, extra=1)
+    form_class_email = formset_factory(EmailForm, extra=1)
+    form_class_phone = formset_factory(PhoneNumberForm, extra=1)
+    # form_class_email = EmailForm
+
+    # form_class_phone = PhoneNumberForm
+
+    def initial_address(self, address):
+        initial = []
+        for one_address in address:
+            initial_address = {'id': one_address.id, 'city': one_address.city, 'street': one_address.street,
+                               'street_number': one_address.street_number, 'flat_number': one_address.flat_number}
+            initial.append(initial_address)
+        return initial
+
 
     def get(self, request, person_id):
         persons_nav = Person.objects.all()
         person = Person.objects.get(id=person_id)
-        address = person.address_set.all().first() # temp
-        email = person.email_set.all().first() # temp
-        phone = person.phonenumber_set.all().first()
+        address = person.address_set.all()
+        email = person.email_set.all()
+        phone = person.phonenumber_set.all()
 
-        initial_person = {'name': person.name, 'surname': person.surname, 'description': person.description, 'image': person.image}
+        initial_person = {'name': person.name, 'surname': person.surname, 'description': person.description,
+                          'image': person.image}
         form_db_person = self.form_class(initial=initial_person)
 
         if address:
-            initial_address = {'city': address.city, 'street': address.street, 'street_number': address.street_number,
-                               'flat_number': address.flat_number}
-            form_db_address = self.form_class_address(initial=initial_address)
+            # initial = []
+            # for one_address in address:
+            #     initial_address = {'city': one_address.city, 'street': one_address.street,
+            #                        'street_number': one_address.street_number, 'flat_number': one_address.flat_number}
+            #     initial.append(initial_address)
+            form_db_address = self.form_class_address(initial=self.initial_address(address), prefix='address')
         else:
-            form_db_address = self.form_class_address
+            form_db_address = self.form_class_address(prefix='address')
+
         if email:
-            initial_email = {'email_address': email.email_address, 'email_type': email.email_type}
-            form_db_email = self.form_class_email(initial=initial_email)
+            initial = []
+            for one_email in email:
+                initial_email = {'email_address': one_email.email_address, 'email_type': one_email.email_type}
+                initial.append(initial_email)
+            form_db_email = self.form_class_email(initial=initial)
         else:
             form_db_email = self.form_class_email
+
         if phone:
-            initial_phone = {'phone_number': phone.phone_number, 'type_number': phone.type_number}
-            form_db_phone = self.form_class_phone(initial=initial_phone)
+            initial = []
+            for one_phone in phone:
+                initial_phone = {'phone_number': one_phone.phone_number, 'type_number': one_phone.type_number}
+                initial.append(initial_phone)
+            form_db_phone = self.form_class_phone(initial=initial)
         else:
             form_db_phone = self.form_class_phone
 
@@ -86,14 +111,48 @@ class EditPerson(View):
                        'form_phone': form_db_phone, 'persons': persons_nav})
 
     def post(self, request, person_id):
+        button = request.POST.get('button')
         person = Person.objects.get(id=person_id)
-        address = person.address_set.all().first() # temp
-        email = person.email_set.all().first() # temp
-        phone = person.phonenumber_set.all().first()
-        form = self.form_class(request.POST, instance=person)
-        if form.is_valid():
-            form.save()
-            form_a = self.form_class_address(request.POST, instance=address)
+        address = person.address_set.all()
+        email = person.email_set.all()
+        phone = person.phonenumber_set.all()
+        if button == 'person':
+            form = self.form_class(request.POST, instance=person)
+            if form.is_valid():
+                form.save()
+        elif button == 'address':
+            form_a = self.form_class_address(request.POST, prefix='address', initial=self.initial_address(address))
+            if form_a.is_valid():
+                for form in form_a:
+                    if form.is_valid() and form.has_changed(): # naprawić problemuy
+                        form_city = form.cleaned_data['city']
+                        form_street = form.cleaned_data['street']
+                        form_street_number = form.cleaned_data['street_number']
+                        form_flat_number = form.cleaned_data['flat_number']
+                        if form_city and form_street and form_street_number and form_flat_number:
+                            form_id = form.cleaned_data['id']
+                            address_db_obj = Address.objects.filter(id=form_id)
+                            if len(address_db_obj) > 0:
+                                one_address = address_db_obj.first()
+                                one_address.flat_number = form_flat_number
+                                one_address.city = form_city
+                                one_address.street_number = form_street_number
+                                one_address.street = form_street
+                                one_address.save()
+                            else:
+                                form.instance.persons = person
+                                form.save()
+                        # elif form.is_valid() and form.empty_permitted:
+                        #     form.instance.persons = person
+                        #     form.save()
+
+        elif button == 'email':
+            pass
+        elif button == 'phone':
+            pass
+
+
+
             form_e = self.form_class_email(request.POST, instance=email)
             form_phone = self.form_class_phone(request.POST, instance=phone)
             if form_a.is_valid() and form_e.is_valid() and form_phone.is_valid():
@@ -115,8 +174,8 @@ class EditPerson(View):
                     form_phone.instance.persons = person
                     form_phone.save()
 
-            return redirect('show-all')
-        return HttpResponse('Nieprawidłowe dane')
+        return redirect('show-all')
+
 
 # edycja zrobiona tylko dla jednego adresu, miasta i telefonu
 

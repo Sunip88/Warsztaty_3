@@ -9,16 +9,15 @@ class AddPersonForm(forms.ModelForm):
 
 
 class AddressForm(forms.ModelForm):
+    id = forms.CharField(widget=forms.HiddenInput, initial='-1')
     class Meta:
         model = Address
         fields = ['city', 'street', 'street_number', 'flat_number']
 
     def __init__(self, *args, **kwargs):
         super(AddressForm, self).__init__(*args, **kwargs)
-        self.fields['city'].required = False
-        self.fields['street'].required = False
-        self.fields['street_number'].required = False
-        self.fields['flat_number'].required = False
+        self.fields['id'].required = False
+
 
 class EmailForm(forms.ModelForm):
     class Meta:

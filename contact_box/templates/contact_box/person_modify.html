@@ -10,7 +10,23 @@
                 {{ form_p|crispy }}
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Zatwierdz</button>
+                <button class="btn btn-outline-info" type="submit" name="button" value="person">Zatwierdz</button>
+            </div>
+        </form>
+    </div>
+    <div class="content-section">
+        <form method="post">
+            {% csrf_token %}
+            {{ form_a.management_form }}
+            <fieldset class="form-group">
+                <label class="border-bottom mb-4">Modyfikowanie adresu</label>
+                {% for form in form_a %}
+                    <hr>
+                {{ form|crispy }}
+                {% endfor %}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit" name="button" value="address">Zatwierdz</button>
             </div>
         </form>
     </div>
@@ -18,32 +34,26 @@
         <form method="post">
             {% csrf_token %}
             <fieldset class="form-group">
-                <label class="border-bottom mb-4">Dodawanie/Modyfikowanie adresu</label>
-                {{ form_a|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Zatwierdz</button>
-            </div>
-        </form>
-    </div>
-    <div class="content-section">
-        <form method="post">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <label class="border-bottom mb-4">Dodawanie/Modyfikowanie adresu</label>
-                {{ form_a|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Zatwierdz</button>
-            </div>
-        </form>
-    </div>
-
-
-
-
-
+                <label class="border-bottom mb-4">Modyfikowanie emaila</label>
                 {{ form_e|crispy }}
-                {{ form_phone|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit" name="button" value="email">Zatwierdz</button>
+            </div>
+        </form>
+    </div>
+    <div class="content-section">
+        <form method="post">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <label class="border-bottom mb-4">Modyfikowanie telefonu</label>
+                 {{ form_phone|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit" name="button" value="phone">Zatwierdz</button>
+            </div>
+        </form>
+    </div>
+
 {% endblock content %}
 
