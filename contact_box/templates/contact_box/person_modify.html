@@ -6,20 +6,44 @@
         <form method="post">
             {% csrf_token %}
             <fieldset class="form-group">
-                <label class="border-bottom mb-4">Dodaj osobe</label>
+                <label class="border-bottom mb-4">Modyfikacja osoby</label>
                 {{ form_p|crispy }}
-                <button>Dodaj adres</button>
-{#                {% for form in form_a %}#}
-                    {{ form_a|crispy }}
-{#                {% endfor %}#}
-
-                {{ form_e|crispy }}
-                {{ form_phone|crispy }}
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Dodaj</button>
+                <button class="btn btn-outline-info" type="submit">Zatwierdz</button>
             </div>
         </form>
     </div>
+    <div class="content-section">
+        <form method="post">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <label class="border-bottom mb-4">Dodawanie/Modyfikowanie adresu</label>
+                {{ form_a|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Zatwierdz</button>
+            </div>
+        </form>
+    </div>
+    <div class="content-section">
+        <form method="post">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <label class="border-bottom mb-4">Dodawanie/Modyfikowanie adresu</label>
+                {{ form_a|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Zatwierdz</button>
+            </div>
+        </form>
+    </div>
+
+
+
+
+
+                {{ form_e|crispy }}
+                {{ form_phone|crispy }}
 {% endblock content %}
 

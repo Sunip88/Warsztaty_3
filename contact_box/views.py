@@ -43,6 +43,7 @@ class NewPerson(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             new_person = form.save()
+            messages.success(request, f'Osoba o imieniu - {new_person.name} oraz nazwisku - {new_person.surname} zostala dodana')
             return redirect('person-specific', id_person=new_person.id)
         return HttpResponse('Nieprawidłowe dane')
 
@@ -80,7 +81,7 @@ class EditPerson(View):
         else:
             form_db_phone = self.form_class_phone
 
-        return render(request, 'contact_box/person_add.html',
+        return render(request, 'contact_box/person_modify.html',
                       {'form_p': form_db_person, 'form_a': form_db_address, 'form_e': form_db_email,
                        'form_phone': form_db_phone, 'persons': persons_nav})
 
@@ -145,6 +146,7 @@ class NewGroup(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             new_group = form.save()
+            messages.success(request, f'Grupa o nazwie {new_group.title} zostala stworzona')
             return redirect('group-specific', id_group=new_group.id)
         return HttpResponse('Nieprawidłowe dane')
 
@@ -178,20 +180,28 @@ class EditGroup(View):
             form = self.form_class(request.POST, instance=group)
             if form.is_valid():
                 form.save()
+                messages.success(request, f'Grupa zostala zmodyfikowana')
         elif button == 'person':
+            i = 0
             persons = [int(x) for x in request.POST.getlist('person')]
             for person in persons:
                 person_db = Person.objects.get(id=person)
                 person_group_db = group.persons.filter(id=person_db.id)
                 if len(person_group_db) == 0:
                     group.persons.add(person_db)
+                    i += 1
             person_on = list(group.persons.all())
-
             for person in person_on:
                 if person.id not in persons:
                     person.delete()
+            if i > 0:
+                messages.success(request, f'Dodano do grupy kontakty w liczbie {i}')
 
-        # dokonczyc
-        return redirect('show-all')
-        # return HttpResponse('Nieprawidłowe dane')
+        return redirect('group-specific', id_group=group.id)
 
+
+def delete_group(request, group_id):
+    group = get_object_or_404(Groups, id=group_id)
+    group.delete()
+    messages.success(request, 'Grupa została usunięta')
+    return redirect('show-all-groups')

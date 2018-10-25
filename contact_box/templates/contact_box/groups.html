@@ -23,7 +23,7 @@
                         <td>{{ group.id }}</td>
                         <td><a href="{% url 'group-specific' group.id %}">{{ group.title }}</a></td>
                         <td><a href="{% url 'modify-group' group.id %}"><button>edytuj</button></a></td>
-                        <td><a href="#"><button>usuń</button></a></td>
+                        <td><a href="{% url 'delete-group' group.id %}"><button>usuń</button></a></td>
                     </tr>
                 {% endfor %}
             </table>
