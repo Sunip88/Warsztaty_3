@@ -1,0 +1,44 @@
+{% extends "contact_box/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<main role="main" class="container">
+    <div class="row">
+        <div class="col-md-8">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+                <div class="content-section">
+                    <form method="post">
+                        {% csrf_token %}
+                        <fieldset class="form-group">
+                            <label class="border-bottom mb-4">Wyszukaj osób w grupach</label>
+                            {{ form|crispy }}
+                        </fieldset>
+                        <div class="form-group">
+                            <button class="btn btn-outline-info" type="submit">Zatwierdz</button>
+                        </div>
+                    </form><br>
+                </div>
+                {% if groups %}
+                    <div class="content-section">
+                    <label class="border-bottom mb-4">Wyniki wyszukiwania</label>
+                    <table cellspacing="3" cellpadding="4">
+                        <tr>
+                            <th>Id</th>
+                            <th>Tytuł</th>
+                        </tr>
+                        {% for group in groups %}
+                            <tr>
+                                <td>{{ group.id }}</td>
+                                <td><a href="{% url 'group-specific' group.id %}">{{ group.title }}</a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+                </div>
+        </div>
+    </div>
+</main>
+{% endblock content %}

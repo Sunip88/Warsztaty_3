@@ -13,19 +13,15 @@
             <h3>Osoby <a href="{% url 'person-add' %}" class="small text-secondary">dodaj</a></h3>
             <table cellspacing="3" cellpadding="4">
                 <tr>
+                    <th>Id</th>
                     <th>Imie i nazwisko</th>
-                    <th>Adres</th>
-                    <th>Telefon</th>
-                    <th>Email</th>
                     <th>Edytuj</th>
                     <th>Usun</th>
                 </tr>
                 {% for person in persons %}
                     <tr>
+                        <td>{{ person.id }}</td>
                         <td><a href="{% url 'person-specific' person.id %}">{{ person.name }} {{ person.surname }}</a></td>
-                        <td>{{ person|person_address_first }}</td>
-                        <td>{{ person|person_phonenumber_first }}</td>
-                        <td>{{ person|person_email_first }}</td>
                         <td><a href="{% url 'modify-person' person.id %}"><button>edytuj</button></a></td>
                         <td><a href="{% url 'delete-person' person.id %}"><button>usuń</button></a></td>
                     </tr>

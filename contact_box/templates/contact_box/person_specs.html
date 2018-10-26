@@ -25,7 +25,7 @@
                 {% for address in person_spec|person_address_all %}
                     <div class="content-section">
                     <p>Miasto: {{ address.city }}</p>
-                    <p>Ulica: {{ address.street }} {{ address.street_number }} {{ street.flat_number }}</p>
+                    <p>Ulica: {{ address.street }}, {{ address.street_number }} / {{ address.flat_number }}</p>
                     </div>
                 {% endfor %}
                     <br>

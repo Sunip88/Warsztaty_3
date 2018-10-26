@@ -6,42 +6,56 @@ class AddPersonForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = ['name', 'surname', 'description', 'image']
+        labels = {
+            'name': 'Imię',
+            'surname': 'Nazwisko',
+            'description': 'Opis',
+            'image': 'Zdjęcie',
+        }
 
 
 class AddressForm(forms.ModelForm):
-    id = forms.CharField(widget=forms.HiddenInput, initial='-1')
     class Meta:
         model = Address
         fields = ['city', 'street', 'street_number', 'flat_number']
-
-    def __init__(self, *args, **kwargs):
-        super(AddressForm, self).__init__(*args, **kwargs)
-        self.fields['id'].required = False
+        labels = {
+            'city': 'Miasto',
+            'street': 'Ulica',
+            'street_number': 'Numer domu',
+            'flat_number': 'Numer mieszkania',
+        }
 
 
 class EmailForm(forms.ModelForm):
     class Meta:
         model = Email
         fields = ['email_address', 'email_type']
-
-    def __init__(self, *args, **kwargs):
-        super(EmailForm, self).__init__(*args, **kwargs)
-        self.fields['email_address'].required = False
-        self.fields['email_type'].required = False
+        labels = {
+            'email_address': 'Adres email',
+            'email_type': 'Typ adresu',
+        }
 
 
 class PhoneNumberForm(forms.ModelForm):
     class Meta:
         model = PhoneNumber
         fields = ['phone_number', 'type_number']
-
-    def __init__(self, *args, **kwargs):
-        super(PhoneNumberForm, self).__init__(*args, **kwargs)
-        self.fields['phone_number'].required = False
-        self.fields['type_number'].required = False
+        labels = {
+            'phone_number': 'numer telefonu',
+            'type_number': 'typ numeru'
+        }
 
 
 class AddGroupForm(forms.ModelForm):
     class Meta:
         model = Groups
         fields = ['title', 'description']
+        labels = {
+            'title': 'Tytuł',
+            'description': 'Opis'
+        }
+
+
+class SearchGroupForm(forms.Form):
+    name = forms.CharField(max_length=32, required=False, label='Imię')
+    surname = forms.CharField(max_length=32, required=False, label='Nazwisko')

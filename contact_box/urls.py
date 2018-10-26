@@ -2,7 +2,7 @@ from django.urls import path
 from contact_box.views import *
 
 urlpatterns = [
-    path('search/', Home.as_view(), name='search'), # TODO: search site
+    path('search/', SearchGroup.as_view(), name='search'),
     path('show/<int:id_person>', ShowSpecific.as_view(), name='person-specific'),
     path('new/', NewPerson.as_view(), name='person-add'),
     path('', Show.as_view(), name='show-all'),
@@ -14,4 +14,3 @@ urlpatterns = [
     path('modify_group/<int:group_id>/', EditGroup.as_view(), name='modify-group'),
     path('delete_group/<int:group_id>/', delete_group, name='delete-group'),
 ]
-
