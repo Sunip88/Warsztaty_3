@@ -15,6 +15,7 @@ class AddPersonForm(forms.ModelForm):
 
 
 class AddressForm(forms.ModelForm):
+    flat_number = forms.CharField(required=False)
     class Meta:
         model = Address
         fields = ['city', 'street', 'street_number', 'flat_number']

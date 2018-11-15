@@ -1,0 +1,42 @@
+{% extends "contact_box/base.html" %}
+{% load extras %}
+{% block content %}
+    <main role="main" class="container">
+    <div class="row">
+        <div class="col-md-8">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        <div class="content-section">
+            <h3>Adresy <a href="{% url 'address-add' %}" class="small text-secondary"><button>dodaj</button></a></h3>
+            <table cellspacing="3" cellpadding="4">
+                <tr>
+                    <th>Id</th>
+                    <th>Miasto</th>
+                    <th>Ulica</th>
+                    <th>Numer działki</th>
+                    <th>Numer mieszkania</th>
+                    <th>Ilość osób</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                {% for address in addresses %}
+                    <tr>
+                        <td>{{ address.id }}</td>
+                        <td>{{ address.city }}</td>
+                        <td>{{ address.street }}</td>
+                        <td>{{ address.street_number }}</td>
+                        <td>{{ address.flat_number }}</td>
+                        <td>{{ address|locatorsAddress}}</td>
+                        <td><a href="#"><button>edytuj</button></a></td>
+                        <td><a href="{% url 'delete-address' address.id %}"><button>usuń</button></a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock content %}

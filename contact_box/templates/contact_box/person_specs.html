@@ -22,12 +22,10 @@
 
                 {% if person_spec|person_address_all %}
                 <p>Adresy:</p>
-                {% for address in person_spec|person_address_all %}
                     <div class="content-section">
-                    <p>Miasto: {{ address.city }}</p>
-                    <p>Ulica: {{ address.street }}, {{ address.street_number }} / {{ address.flat_number }}</p>
+                    <p>Miasto: {{ person_spec.addresses.city }}</p>
+                    <p>Ulica: {{ person_spec.addresses.street }}, {{ person_spec.addresses.street_number }} / {{ person_spec.addresses.flat_number }}</p>
                     </div>
-                {% endfor %}
                     <br>
                 {% endif %}
 

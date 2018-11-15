@@ -14,45 +14,74 @@
             </div>
         </form>
     </div>
-    <div class="content-section">
-        <form method="post">
-            {% csrf_token %}
-            {{ form_a.management_form }}
-            <fieldset class="form-group">
-                <label class="border-bottom mb-4">Modyfikowanie adresu</label>
-                {% for form in form_a %}
-                    <hr>
-                {{ form|crispy }}
-                {% endfor %}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit" name="button" value="address">Zatwierdz</button>
-            </div>
-        </form>
+    <div class="content-section ">
+        <label class="border-bottom mb-4">Modyfikowanie adresu</label><br>
+        <input class="button buttonModifyDiv" type="button" value="Rozwin">
+        <div class="modifyDiv">
+            <form method="post">
+                {% csrf_token %}
+                <fieldset class="form-group"><br>
+                        <label>Wybierz adres już istniejący lub dodaj nowy</label><br>
+                        <input class="button buttonFormAddress" type="button" value="Dodaj nowy adres">
+                        <input class="button buttonSelectAddress" type="button" value="Wybierz istniejący adres">
+                    <br><br>
+                        <select name="address_select" class="selectAddress">
+                            <option value="0">---</option>
+                        {% for address in addresses %}
+                            {% if address_person == address.id %}
+                                <option selected="selected" value="{{ address.id }}">
+                                    {{ address.city }}, {{ address.street }}, {{ address.street_number }} / {{ address.flat_number }}
+                                </option>
+                            {% else %}
+                                <option value="{{ address.id }}">
+                                    {{ address.city }}, {{ address.street }}, {{ address.street_number }} / {{ address.flat_number }}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                        </select><br>
+
+                        <div id="formAddress">
+                            {{ form_a|crispy }}
+                        </div>
+                </fieldset>
+                <div class="form-group addressSubmit">
+                    <button class="btn btn-outline-info" type="submit" name="button" value="address">Zatwierdz</button>
+                </div>
+            </form>
+        </div>
     </div>
-    <div class="content-section">
-        <form method="post">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <label class="border-bottom mb-4">Modyfikowanie emaila</label>
-                {{ form_e|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit" name="button" value="email">Zatwierdz</button>
-            </div>
-        </form>
+    <div class="content-section ">
+        <label class="border-bottom mb-4">Modyfikowanie emaila</label><br>
+        <input class="button buttonModifyDiv" type="button" value="Rozwin">
+        <div class="modifyDiv">
+            <form method="post">
+                {% csrf_token %}
+                <fieldset class="form-group">
+
+                    {{ form_e|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit" name="button" value="email">Zatwierdz</button>
+                </div>
+            </form>
+        </div>
     </div>
-    <div class="content-section">
-        <form method="post">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <label class="border-bottom mb-4">Modyfikowanie telefonu</label>
-                 {{ form_phone|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit" name="button" value="phone">Zatwierdz</button>
-            </div>
-        </form>
+
+    <div class="content-section ">
+        <label class="border-bottom mb-4">Modyfikowanie telefonu</label><br>
+        <input class="button buttonModifyDiv" type="button" value="Rozwin">
+        <div class="modifyDiv">
+            <form method="post">
+                {% csrf_token %}
+                <fieldset class="form-group">
+
+                     {{ form_phone|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit" name="button" value="phone">Zatwierdz</button>
+                </div>
+            </form>
+        </div>
     </div>
 
 {% endblock content %}

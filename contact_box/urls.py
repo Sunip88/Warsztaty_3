@@ -13,4 +13,8 @@ urlpatterns = [
     path('show_group/<int:id_group>', ShowSpecificGroup.as_view(), name='group-specific'),
     path('modify_group/<int:group_id>/', EditGroup.as_view(), name='modify-group'),
     path('delete_group/<int:group_id>/', delete_group, name='delete-group'),
+    path('address/', Addresses.as_view(), name='show-all-address'),
+    path('delete_address/<int:address_id>/', delete_address, name='delete-address'),
+    path('new_address/', NewAddresses.as_view(), name='address-add'),
+
 ]

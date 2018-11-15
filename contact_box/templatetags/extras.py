@@ -6,7 +6,7 @@ register = template.Library()
 
 @register.filter(name='person_address_all')
 def person_address_all(person):
-    return person.address_set.all()
+    return person.addresses
 
 
 @register.filter(name='person_address_first')
@@ -71,3 +71,8 @@ def person_email_all(person):
         type_email = temp.get_email_type_display()
         temp = email + ', ' + type_email
     return temp
+
+
+@register.filter(name='locatorsAddress')
+def address_persons(address):
+    return len(address.person_set.all())

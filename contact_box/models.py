@@ -2,11 +2,22 @@ from django.db import models
 from PIL import Image
 
 
+class Address(models.Model):
+    city = models.CharField(max_length=64)
+    street = models.CharField(max_length=64)
+    street_number = models.CharField(max_length=8)
+    flat_number = models.CharField(max_length=8, null=True)
+
+    def __str__(self):
+        return f'{self.city}, {self.street}, {self.street_number}, {self.flat_number}'
+
+
 class Person(models.Model):
     name = models.CharField(max_length=32)
     surname = models.CharField(max_length=32)
     description = models.TextField(null=True)
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    addresses = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f'{self.name} {self.surname} Profile'
@@ -19,17 +30,6 @@ class Person(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.image.path)
-
-
-class Address(models.Model):
-    city = models.CharField(max_length=64)
-    street = models.CharField(max_length=64)
-    street_number = models.CharField(max_length=8)
-    flat_number = models.CharField(max_length=8, null=True)
-    persons = models.ForeignKey(Person, on_delete=models.CASCADE, null=True)
-
-    def __str__(self):
-        return f'{self.city}, {self.street}, {self.street_number}, {self.flat_number}'
 
 
 class PhoneNumber(models.Model):

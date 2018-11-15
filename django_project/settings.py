@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'django_project.wsgi.application'
 DATABASES = {
     'default': {
         'HOST': '127.0.0.1',
-        'NAME': 'w3_contact_box',
+        'NAME': 'w3_contact_box_2',
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'USER': db_user,
         'PASSWORD': db_pass,

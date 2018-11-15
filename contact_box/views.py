@@ -38,21 +38,27 @@ class NewPerson(View):
 
 class EditPerson(View):
     form_class = AddPersonForm
-    form_class_address = inlineformset_factory(Person, Address, AddressForm, extra=1)
+    form_class_address = AddressForm
     form_class_email = inlineformset_factory(Person, Email, EmailForm, extra=1)
     form_class_phone = inlineformset_factory(Person, PhoneNumber, PhoneNumberForm, extra=1)
 
     def get(self, request, person_id):
         persons_nav = Person.objects.all()
-        person = Person.objects.get(id=person_id)
+        addresses_all = Address.objects.all()
+        person = get_object_or_404(Person, id=person_id)
+        if person.addresses_id:
+            address_person = person.addresses_id
+        else:
+            address_person = None
         form_db_person = self.form_class(instance=person)
-        form_db_address = self.form_class_address(instance=person)
+        form_db_address = self.form_class_address(use_required_attribute=False)
         form_db_email = self.form_class_email(instance=person)
         form_db_phone = self.form_class_phone(instance=person)
 
         return render(request, 'contact_box/person_modify.html',
-                      {'form_p': form_db_person, 'form_a': form_db_address, 'form_e': form_db_email,
-                       'form_phone': form_db_phone, 'persons': persons_nav})
+                      {'form_a': form_db_address, 'form_p': form_db_person, 'form_e': form_db_email,
+                       'form_phone': form_db_phone, 'persons': persons_nav, 'addresses': addresses_all,
+                       'address_person': address_person})
 
     def post(self, request, person_id):
         button = request.POST.get('button')
@@ -65,10 +71,17 @@ class EditPerson(View):
                 if temp:
                     counter += 1
         elif button == 'address':
-            form_a = self.form_class_address(request.POST, instance=person)
+            form_a = self.form_class_address(request.POST)
             if form_a.is_valid():
                 temp = form_a.save()
                 if temp:
+                    temp.person_set.add(person)
+                    counter += 1
+            else:
+                select_id = request.POST.get("address_select")
+                if select_id != "0":
+                    address_select = get_object_or_404(Address, id=select_id)
+                    address_select.person_set.add(person)
                     counter += 1
         elif button == 'email':
             form_e = self.form_class_email(request.POST, instance=person)
@@ -199,3 +212,80 @@ class SearchGroup(View):
                 messages.warning(request, 'Brak wyników wyszukiwania')
         return render(request, 'contact_box/search.html', {'form': self.class_form, 'groups': result})
 
+
+class Addresses(View):
+    def get(self, request):
+        addresses_db = Address.objects.all()
+        return render(request, 'contact_box/addresses.html', {'addresses': addresses_db})
+
+
+class NewAddresses(View):
+    class_form = AddressForm
+
+    def get(self, request):
+        return render(request, 'contact_box/address_add.html', {'form': self.class_form})
+
+    def post(self, request):
+        form = self.class_form(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Udało się stworzyć nowy adres')
+        return redirect('show-all-address')
+
+
+def delete_address(request, address_id):
+    address_db = get_object_or_404(Address, id=address_id)
+    address_db.delete()
+    messages.success(request, 'Adres został usunięty')
+    return redirect('show-all-address')
+
+
+class EditAddress(View):
+    form_class = AddressForm
+
+    def get(self, request, address_id):
+        pass # TODO dokonczyc
+    # def get(self, request, group_id):
+    #     groups = Groups.objects.all()
+    #     group = get_object_or_404(Groups, id=group_id)
+    #     initial_person = {'title': group.title, 'description': group.description}
+    #     form_db_person = self.form_class(initial=initial_person)
+    #     persons = list(Person.objects.all())
+    #     person_on = list(group.persons.all())
+    #
+    #     return render(request, 'contact_box/group_modify.html',
+    #                   {'form': form_db_person, 'groups': groups, 'person_on': person_on, 'persons': persons})
+    #
+    # def post(self, request, group_id):
+    #     group = get_object_or_404(Groups, id=group_id)
+    #     button = request.POST.get('button')
+    #     if button == 'group':
+    #         form = self.form_class(request.POST, instance=group)
+    #         if form.is_valid():
+    #             form.save()
+    #             messages.success(request, f'Grupa zostala zmodyfikowana')
+    #     elif button == 'person':
+    #         i = 0
+    #         persons = [int(x) for x in request.POST.getlist('person')]
+    #         for person in persons:
+    #             person_db = Person.objects.get(id=person)
+    #             person_group_db = group.persons.filter(id=person_db.id)
+    #             if len(person_group_db) == 0:
+    #                 group.persons.add(person_db)
+    #                 i += 1
+    #         person_on = list(group.persons.all())
+    #         for person in person_on:
+    #             if person.id not in persons:
+    #                 person.delete()
+    #         if i > 0:
+    #             messages.success(request, f'Dodano do grupy kontakty w liczbie {i}')
+    #
+    #     return redirect('group-specific', id_group=group.id)
+
+
+
+# TODO stworzyc messega czy na pewno usunac chcesz adres gdy wiecej niz 0 mieszkancow
+# TODO dodaj przy liczbie mieszkanców link do tych osób
+# TODO relacja wiele osob do jednego adresu
+# TODO poprawic zdjecia
+# TODO poprawic wyszukiwanie grupy osoby
