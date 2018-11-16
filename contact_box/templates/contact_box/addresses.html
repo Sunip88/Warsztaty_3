@@ -10,7 +10,7 @@
                 {% endfor %}
             {% endif %}
         <div class="content-section">
-            <h3>Adresy <a href="{% url 'address-add' %}" class="small text-secondary"><button>dodaj</button></a></h3>
+            <h3>Adresy <a class="small btn btn-outline-info" href="{% url 'address-add' %}">dodaj</a></h3>
             <table cellspacing="3" cellpadding="4">
                 <tr>
                     <th>Id</th>
@@ -29,9 +29,9 @@
                         <td>{{ address.street }}</td>
                         <td>{{ address.street_number }}</td>
                         <td>{{ address.flat_number }}</td>
-                        <td>{{ address|locatorsAddress}}</td>
-                        <td><a href="#"><button>edytuj</button></a></td>
-                        <td><a href="{% url 'delete-address' address.id %}"><button>usuń</button></a></td>
+                        <td id="locatorsAdress"><a class="btn btn-outline-info" href="{% url 'show-persons-address' address.id %}">{{ address|locatorsAddress }}</a></td>
+                        <td><a class="btn btn-outline-info" href="{% url 'modify-address' address.id %}">edytuj</a></td>
+                        <td><a id="buttonDeleteAddress" class="btn btn-outline-info" href="{% url 'delete-address' address.id %}">usuń</a></td>
                     </tr>
                 {% endfor %}
             </table>

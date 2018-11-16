@@ -16,5 +16,6 @@ urlpatterns = [
     path('address/', Addresses.as_view(), name='show-all-address'),
     path('delete_address/<int:address_id>/', delete_address, name='delete-address'),
     path('new_address/', NewAddresses.as_view(), name='address-add'),
-
+    path('modify_address/<int:address_id>/', EditAddress.as_view(), name='modify-address'),
+    path('show_persons_address/<int:address_id>/', ShowPersonAddress.as_view(), name='show-persons-address'),
 ]

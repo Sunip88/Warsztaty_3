@@ -1,4 +1,5 @@
 {% extends "contact_box/base.html" %}
+{% load extras %}
 {% load crispy_forms_tags %}
 {% block content %}
 <main role="main" class="container">
@@ -21,18 +22,26 @@
                         </div>
                     </form><br>
                 </div>
-                {% if groups %}
-                    <div class="content-section">
-                    <label class="border-bottom mb-4">Wyniki wyszukiwania</label>
-                    <table cellspacing="3" cellpadding="4">
+                {% if persons %}
+                    <table cellspacing="3" cellpadding="4" border="1">
                         <tr>
                             <th>Id</th>
-                            <th>Tytuł</th>
+                            <th>Imie i nazwisko</th>
+                            <th>Grupy</th>
                         </tr>
-                        {% for group in groups %}
+                        {% for person in persons %}
                             <tr>
-                                <td>{{ group.id }}</td>
-                                <td><a href="{% url 'group-specific' group.id %}">{{ group.title }}</a></td>
+                                <td>{{ person.id }}</td>
+                                <td><a href="{% url 'person-specific' person.id %}">{{ person.name }} {{ person.surname }}</a></td>
+                            <td>
+                                {% if person|person_groups %}
+                                    {% for group in person|person_groups %}
+                                        <a href="{% url 'group-specific' group.id %}">{{ group.title }}</a><br>
+                                    {% endfor %}
+                                {% else %}
+                                    brak grupy
+                                {% endif %}
+                            </td>
                             </tr>
                         {% endfor %}
                     </table>

@@ -10,20 +10,18 @@
                 {% endfor %}
             {% endif %}
         <div class="content-section">
-            <h3>Grupy <a class="btn btn-outline-info small" href="{% url 'group-add' %}">dodaj</a></h3>
+            <h3>Osoby</h3>
+            <h4>mieszkające pod adresem:</h4>
+            <p>{{ address.city }}, {{ address.street }} {{ address.street_number }} / {{ address.flat_number }}</p>
             <table cellspacing="3" cellpadding="4">
                 <tr>
                     <th>Id</th>
-                    <th>Tytuł</th>
-                    <th></th>
-                    <th></th>
+                    <th>Imie i nazwisko</th>
                 </tr>
-                {% for group in groups %}
+                {% for person in persons %}
                     <tr>
-                        <td>{{ group.id }}</td>
-                        <td><a href="{% url 'group-specific' group.id %}">{{ group.title }}</a></td>
-                        <td><a class="btn btn-outline-info" href="{% url 'modify-group' group.id %}">edytuj</a></td>
-                        <td><a class="btn btn-outline-info" href="{% url 'delete-group' group.id %}">usuń</a></td>
+                        <td>{{ person.id }}</td>
+                        <td><a href="{% url 'person-specific' person.id %}">{{ person.name }} {{ person.surname }}</a></td>
                     </tr>
                 {% endfor %}
             </table>

@@ -1,0 +1,43 @@
+{% extends "contact_box/base.html" %}
+{% load extras %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <main role="main" class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="content-section">
+                    <form method="post">
+                        {% csrf_token %}
+                        <fieldset class="form-group">
+                            <label class="border-bottom mb-4">Modyfikuj adres</label>
+                            {{ form|crispy }}
+                        </fieldset>
+                        <div class="form-group">
+                            <button class="btn btn-outline-info" type="submit">Zatwierdz</button>
+                        </div>
+                    </form>
+                {% if persons %}
+                    <div class="content-section">
+                    <label>Osoby mieszkajace pod modyfikowanym adresem</label>
+                        <table cellspacing="3" cellpadding="4">
+                            <tr>
+                                <th>Id</th>
+                                <th>Imie i nazwisko</th>
+                            </tr>
+                            {% for person in persons %}
+                                <tr>
+                                    <td>{{ person.id }}</td>
+                                    <td><a  href="{% url 'person-specific' person.id %}">{{ person.name }} {{ person.surname }}</a></td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                {% else %}
+                    <br>
+                    <label>Brak osob pod podanym adresem</label>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock content %}

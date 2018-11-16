@@ -65,7 +65,7 @@ class EditPerson(View):
         person = Person.objects.get(id=person_id)
         counter = 0
         if button == 'person':
-            form = self.form_class(request.POST, instance=person)
+            form = self.form_class(request.POST, request.FILES, instance=person)
             if form.is_valid():
                 temp = form.save()
                 if temp:
@@ -82,6 +82,10 @@ class EditPerson(View):
                 if select_id != "0":
                     address_select = get_object_or_404(Address, id=select_id)
                     address_select.person_set.add(person)
+                    counter += 1
+                elif select_id == "0":
+                    person.addresses = None
+                    person.save()
                     counter += 1
         elif button == 'email':
             form_e = self.form_class_email(request.POST, instance=person)
@@ -174,7 +178,7 @@ class EditGroup(View):
             person_on = list(group.persons.all())
             for person in person_on:
                 if person.id not in persons:
-                    person.delete()
+                    group.persons.remove(Person.objects.get(id=person.id))
             if i > 0:
                 messages.success(request, f'Dodano do grupy kontakty w liczbie {i}')
 
@@ -200,17 +204,17 @@ class SearchGroup(View):
             name = form.cleaned_data['name']
             surname = form.cleaned_data['surname']
             if name:
-                result_name = Groups.objects.filter(persons__name__icontains=name)
+                result_person_name = Person.objects.filter(name__icontains=name)
             else:
-                result_name = Groups.objects.all()
+                result_person_name = Person.objects.all()
             if surname:
-                result_surname = Groups.objects.filter(persons__surname__icontains=surname)
+                result_person_surname = Person.objects.filter(surname__icontains=surname)
             else:
-                result_surname = Groups.objects.all()
-            result = result_name.distinct() & result_surname.distinct()
-            if not result:
+                result_person_surname = Person.objects.all()
+            result_persons = result_person_name.distinct() & result_person_surname.distinct()
+            if not result_persons:
                 messages.warning(request, 'Brak wyników wyszukiwania')
-        return render(request, 'contact_box/search.html', {'form': self.class_form, 'groups': result})
+        return render(request, 'contact_box/search.html', {'form': self.class_form, 'persons': result_persons})
 
 
 class Addresses(View):
@@ -244,48 +248,28 @@ class EditAddress(View):
     form_class = AddressForm
 
     def get(self, request, address_id):
-        pass # TODO dokonczyc
-    # def get(self, request, group_id):
-    #     groups = Groups.objects.all()
-    #     group = get_object_or_404(Groups, id=group_id)
-    #     initial_person = {'title': group.title, 'description': group.description}
-    #     form_db_person = self.form_class(initial=initial_person)
-    #     persons = list(Person.objects.all())
-    #     person_on = list(group.persons.all())
-    #
-    #     return render(request, 'contact_box/group_modify.html',
-    #                   {'form': form_db_person, 'groups': groups, 'person_on': person_on, 'persons': persons})
-    #
-    # def post(self, request, group_id):
-    #     group = get_object_or_404(Groups, id=group_id)
-    #     button = request.POST.get('button')
-    #     if button == 'group':
-    #         form = self.form_class(request.POST, instance=group)
-    #         if form.is_valid():
-    #             form.save()
-    #             messages.success(request, f'Grupa zostala zmodyfikowana')
-    #     elif button == 'person':
-    #         i = 0
-    #         persons = [int(x) for x in request.POST.getlist('person')]
-    #         for person in persons:
-    #             person_db = Person.objects.get(id=person)
-    #             person_group_db = group.persons.filter(id=person_db.id)
-    #             if len(person_group_db) == 0:
-    #                 group.persons.add(person_db)
-    #                 i += 1
-    #         person_on = list(group.persons.all())
-    #         for person in person_on:
-    #             if person.id not in persons:
-    #                 person.delete()
-    #         if i > 0:
-    #             messages.success(request, f'Dodano do grupy kontakty w liczbie {i}')
-    #
-    #     return redirect('group-specific', id_group=group.id)
+        address_db = get_object_or_404(Address, id=address_id)
+        persons = address_db.person_set.all()
+        initial_address = {'city': address_db.city, 'street': address_db.street,
+                           'street_number': address_db.street_number, 'flat_number': address_db.flat_number}
+        form = self.form_class(initial=initial_address)
+        return render(request, 'contact_box/address_modify.html', {'form': form, 'persons': persons})
 
+    def post(self, request, address_id):
+        address_db = get_object_or_404(Address, id=address_id)
+        form = self.form_class(request.POST, instance=address_db)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Adres zostal zmodyfikowany')
+        return redirect('show-all-address')
+
+
+class ShowPersonAddress(View):
+
+    def get(self, request, address_id):
+        address = get_object_or_404(Address, id=address_id)
+        persons = address.person_set.all()
+        return render(request, 'contact_box/address_persons.html', {'persons': persons, 'address': address})
 
 
 # TODO stworzyc messega czy na pewno usunac chcesz adres gdy wiecej niz 0 mieszkancow
-# TODO dodaj przy liczbie mieszkanców link do tych osób
-# TODO relacja wiele osob do jednego adresu
-# TODO poprawic zdjecia
-# TODO poprawic wyszukiwanie grupy osoby

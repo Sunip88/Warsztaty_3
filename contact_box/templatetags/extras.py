@@ -76,3 +76,8 @@ def person_email_all(person):
 @register.filter(name='locatorsAddress')
 def address_persons(address):
     return len(address.person_set.all())
+
+
+@register.filter(name='person_groups')
+def person_groups(person):
+    return person.group.all()

@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
     <div class="content-section">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <fieldset class="form-group">
                 <label class="border-bottom mb-4">Modyfikacja osoby</label>
@@ -14,19 +14,19 @@
             </div>
         </form>
     </div>
-    <div class="content-section ">
+    <div class="content-section">
         <label class="border-bottom mb-4">Modyfikowanie adresu</label><br>
-        <input class="button buttonModifyDiv" type="button" value="Rozwin">
+        <input class="btn btn-outline-info buttonModifyDiv" type="button" value="Rozwin">
         <div class="modifyDiv">
             <form method="post">
                 {% csrf_token %}
                 <fieldset class="form-group"><br>
                         <label>Wybierz adres już istniejący lub dodaj nowy</label><br>
-                        <input class="button buttonFormAddress" type="button" value="Dodaj nowy adres">
-                        <input class="button buttonSelectAddress" type="button" value="Wybierz istniejący adres">
+                        <input class="btn btn-outline-info buttonFormAddress" type="button" value="Dodaj nowy adres">
+                        <input class="btn btn-outline-info buttonSelectAddress" type="button" value="Wybierz istniejący adres">
                     <br><br>
                         <select name="address_select" class="selectAddress">
-                            <option value="0">---</option>
+                            <option value="0">Brak adresu</option>
                         {% for address in addresses %}
                             {% if address_person == address.id %}
                                 <option selected="selected" value="{{ address.id }}">
@@ -52,7 +52,7 @@
     </div>
     <div class="content-section ">
         <label class="border-bottom mb-4">Modyfikowanie emaila</label><br>
-        <input class="button buttonModifyDiv" type="button" value="Rozwin">
+        <input class="btn btn-outline-info buttonModifyDiv" type="button" value="Rozwin">
         <div class="modifyDiv">
             <form method="post">
                 {% csrf_token %}
@@ -69,7 +69,7 @@
 
     <div class="content-section ">
         <label class="border-bottom mb-4">Modyfikowanie telefonu</label><br>
-        <input class="button buttonModifyDiv" type="button" value="Rozwin">
+        <input class="btn btn-outline-info buttonModifyDiv" type="button" value="Rozwin">
         <div class="modifyDiv">
             <form method="post">
                 {% csrf_token %}
