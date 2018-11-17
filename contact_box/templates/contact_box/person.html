@@ -23,7 +23,7 @@
                         <td>{{ person.id }}</td>
                         <td><a href="{% url 'person-specific' person.id %}">{{ person.name }} {{ person.surname }}</a></td>
                         <td><a class="btn btn-outline-info" href="{% url 'modify-person' person.id %}">edytuj</a></td>
-                        <td><a class="btn btn-outline-info" href="{% url 'delete-person' person.id %}">usuń</a></td>
+                        <td><a class="btn btn-outline-info deleteElement" href="{% url 'delete-person' person.id %}">usuń</a></td>
                     </tr>
                 {% endfor %}
             </table>

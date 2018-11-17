@@ -26,4 +26,9 @@ $(function () {
         $("#formAddress").css("display", "block");
     });
 
+    var popUpQuestion = function (event) {
+        return window.confirm("Czy jesteś pewien że chcesz usunąć element?");
+    };
+
+    $(".deleteElement").on("click", popUpQuestion)
 });

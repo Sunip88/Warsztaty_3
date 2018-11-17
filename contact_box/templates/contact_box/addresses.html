@@ -29,9 +29,9 @@
                         <td>{{ address.street }}</td>
                         <td>{{ address.street_number }}</td>
                         <td>{{ address.flat_number }}</td>
-                        <td id="locatorsAdress"><a class="btn btn-outline-info" href="{% url 'show-persons-address' address.id %}">{{ address|locatorsAddress }}</a></td>
+                        <td><a class="btn btn-outline-info" href="{% url 'show-persons-address' address.id %}">{{ address|locatorsAddress }}</a></td>
                         <td><a class="btn btn-outline-info" href="{% url 'modify-address' address.id %}">edytuj</a></td>
-                        <td><a id="buttonDeleteAddress" class="btn btn-outline-info" href="{% url 'delete-address' address.id %}">usuń</a></td>
+                        <td><a class="btn btn-outline-info deleteElement" href="{% url 'delete-address' address.id %}">usuń</a></td>
                     </tr>
                 {% endfor %}
             </table>
